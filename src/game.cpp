@@ -20,6 +20,8 @@ void Game::init() {
 
 //game loop
 void Game::loop() {
+  ab.drawRect(0,0,128,64,WHITE);
+
   //do player shit
   player.step();
   player.draw();
@@ -39,32 +41,3 @@ void Game::loop() {
   //try again?
 
 //contact details
-
-
-
-
-//player initialization
-void Player::init() {
-  x = FIELD_WIDTH/2;
-  y = FIELD_HEIGHT/2;
-  dir = SOUTH;
-}
-
-void Player::step() {
-  if (ab.pressed(LEFT_BUTTON)) {
-    x--;
-  }
-  if (ab.pressed(RIGHT_BUTTON)) {
-    x++;
-  }
-  if (ab.pressed(UP_BUTTON)) {
-    y--;
-  }
-  if (ab.pressed(DOWN_BUTTON)) {
-    y++;
-  }
-}
-
-void Player::draw() {
-  ab.drawRect(x-PLAYER_WIDTH/2, y-PLAYER_HEIGHT/2, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
-}

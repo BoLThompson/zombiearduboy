@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 #include "global.h"
+#include "player.h"
 
 class Game {
   public:
@@ -10,17 +11,6 @@ class Game {
 
 class Director {
   
-};
-
-class Player {
-  private:
-    int x;
-    int y;
-    direction dir;
-  public:
-    void init();
-    void step();
-    void draw();
 };
 
 #endif
