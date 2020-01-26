@@ -4,9 +4,9 @@
 
 class Player {
   private:
-    int x;
-    int y;
-    direction dir;
+    uint16_t x;
+    uint16_t y;
+    uint16_t dir;
     void (Player::*fireRoutine)();
     void (Player::*stepRoutine)();
     void idle();
