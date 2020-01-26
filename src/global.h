@@ -9,12 +9,10 @@
 #define FIELD_HEIGHT 64
 
 #define PLAYER_WIDTH 6
-#define PLAYER_HEIGHT 6
+#define PLAYER_HEIGHT 12
+#define GUN_WIDTH 7
+#define GUN_HEIGHT 4
 
-#define NORTH UP_BUTTON
-#define SOUTH DOWN_BUTTON
-#define EAST RIGHT_BUTTON
-#define WEST LEFT_BUTTON
 #define NORTHWEST UP_BUTTON+LEFT_BUTTON
 #define SOUTHWEST DOWN_BUTTON+LEFT_BUTTON
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
@@ -22,6 +20,5 @@
 
 extern Arduboy2Base ab;
 extern Sprites sprites;
-
 
 #endif

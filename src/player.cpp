@@ -2,10 +2,10 @@
 
 //player initialization
 void Player::init() {
-  x = (FIELD_WIDTH/2)<<8;
-  y = (FIELD_HEIGHT/2)<<8;
-  dir = SOUTH;
+  x = (FIELD_WIDTH/8)<<8;
+  y = ((FIELD_HEIGHT/3)*2)<<8;
   stepRoutine = &Player::idle;
+  faceRight = true;
 }
 
 void Player::step() {
@@ -14,30 +14,38 @@ void Player::step() {
 
 void Player::idle() {
 
-  //button state of only dirkeys
-  uint8_t dirkeys = ab.buttonsState() & ~(A_BUTTON+B_BUTTON);
-
-  //match the player's direction to the arrow keys
-  dir = dirkeys;
-
-  //additional walking speed if the player is walking cardinally
-  uint8_t fineSpeed = 102;
+  //walking and moonwalking
   
-  //remove the additional walking speed if the player is holding more than one directional key
-  if ((dirkeys & (dirkeys-1)) != 0) fineSpeed=0;
+  //if holding Left
+  if (ab.buttonsState() & LEFT_BUTTON) {
+
+    //at least move half a pixel
+    x-=_BV(7);
+
+    //if we're not shooting,
+    if (!(ab.buttonsState() & B_BUTTON)) {
+
+      //turn to the left
+      faceRight = false;
+
+      //move an additional half pixel
+      x-=_BV(7);
+    }
+    //if we are shooting, only move the extra half pixel if we're facing the right way
+    else if (!faceRight) x-=_BV(7);
+
+  }
+
+  //and all that again for the right
+  if (ab.buttonsState() & RIGHT_BUTTON) {
+    x+=_BV(7);
+    if (!(ab.buttonsState() & B_BUTTON)) {
+      faceRight = true;
+      x+=_BV(7);
+    }
+    else if (faceRight) x+=_BV(7);
+  }
   
-  if (dirkeys & LEFT_BUTTON) {
-    x-=(1<<8)+fineSpeed;
-  }
-  if (dirkeys & RIGHT_BUTTON) {
-    x+=(1<<8)+fineSpeed;
-  }
-  if (dirkeys & UP_BUTTON) {
-    y-=(1<<8)+fineSpeed;
-  }
-  if (dirkeys & DOWN_BUTTON) {
-    y+=(1<<8)+fineSpeed;
-  }
 }
 
 void Player::draw() {
@@ -45,4 +53,5 @@ void Player::draw() {
   uint8_t dispY = y>>8;
   ab.fillRect(dispX-PLAYER_WIDTH/2+1,dispY-PLAYER_HEIGHT/2+1, PLAYER_WIDTH-2, PLAYER_HEIGHT-2, BLACK);
   ab.drawRect(dispX-PLAYER_WIDTH/2, dispY-PLAYER_HEIGHT/2, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
+  ab.drawRect(dispX-(faceRight==true ? 0 : GUN_WIDTH), dispY-(PLAYER_HEIGHT/3), GUN_WIDTH, GUN_HEIGHT, WHITE);
 }
