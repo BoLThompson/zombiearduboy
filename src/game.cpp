@@ -1,7 +1,7 @@
 #include "game.h"
 #include "player.h"
 
-Player player; //haha lol
+extern Player player;
 
 //title screen
   //maybe a difficulty toggle

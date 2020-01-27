@@ -1,10 +1,12 @@
 #include "player.h"
 
+extern Player player;
+
 //player initialization
 void Player::init() {
   x = (FIELD_WIDTH/8)<<8;
-  y = ((FIELD_HEIGHT/4)*3)<<8;
-  stepRoutine = &Player::idle;
+  y = TEMP_GROUND<<8;
+  stepRoutine = &Player::idleStep;
   fireRoutine = &Player::fireNormal;
   faceRight = true;
 }
@@ -16,7 +18,7 @@ void Player::step() {
   bullets.step();
 }
 
-void Player::idle() {
+void Player::idleStep() {
 
   //walking and moonwalking
   
@@ -51,8 +53,46 @@ void Player::idle() {
   }
 
   //shoot maybe?
+  shootAction();
+
+  //possibly jump
+  jumpAction();
+}
+
+void Player::jumpStep() {
+  y+= vSpeed;
+  vSpeed = min(vSpeed+64,5<<8);
+
+  x+= hSpeed;
+
+  if (ab.pressed(RIGHT_BUTTON)) faceRight = true;
+  else if (ab.pressed(LEFT_BUTTON)) faceRight = false;
+
+  if (y >= TEMP_GROUND<<8) {
+    y = TEMP_GROUND<<8;
+    stepRoutine = &Player::idleStep;
+  }
+
+  shootAction();
+}
+
+void Player::shootAction() {
   if (ab.justPressed(FIRE_BUTTON)) {
     (this->*fireRoutine)();
+  }
+}
+
+void Player::jumpAction() {
+  if (ab.justPressed(JUMP_BUTTON)) {
+    stepRoutine = &Player::jumpStep;
+    vSpeed = -3*(_BV(8));
+    if (ab.pressed(RIGHT_BUTTON)) {
+      hSpeed = _BV(8);
+    }
+    else if (ab.pressed(LEFT_BUTTON)) {
+      hSpeed = _BV(8)*-1;
+    }
+    else hSpeed=0;
   }
 }
 
@@ -67,13 +107,18 @@ void Player::fireNormal() {
 }
 
 void Player::draw() {
-  uint8_t dispX = x>>8;
-  uint8_t dispY = y>>8;
+  uint16_t dispX = x>>8;
+  uint16_t dispY = y>>8;
   ab.fillRect(dispX-PLAYER_WIDTH/2+1,dispY-PLAYER_HEIGHT+1, PLAYER_WIDTH-2, PLAYER_HEIGHT-2, BLACK);
   ab.drawRect(dispX-PLAYER_WIDTH/2, dispY-PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
   ab.drawRect(dispX-(faceRight==true ? 0 : GUN_WIDTH), dispY-(PLAYER_HEIGHT/3)*2, GUN_WIDTH, GUN_HEIGHT, WHITE);
 
   bullets.draw();
+}
+
+struct BulletList * Player::getBulletList() {
+  struct BulletList *value = &bullets;
+  return value;
 }
 
 // //heheheh
@@ -113,8 +158,9 @@ void BulletList::step() {
   struct Bullet *curNode = head;
 
   while (curNode != NULL) {
+    struct Bullet *nextNode = curNode->next;
     curNode->step();
-    curNode = curNode->next;
+    curNode = nextNode;
   }
 }
 
@@ -135,18 +181,43 @@ void Bullet::step() {
 
 void Bullet::normalStep() {
   if (dir == RIGHT) {
-    x+=_BV(8);
+    x+=_BV(10);
   }
-  else x-=_BV(8);
+  else x-=_BV(10);
   timer++;
   if (timer == 0) {
-    //destroy self
+    destroy();
   }
 }
 
+void Bullet::destroy() {
+  struct Bullet *curNode = (player.getBulletList())->head;
+  
+  //if we're the head,
+  if (curNode == this) {
+    (player.getBulletList())->head = next;
+  }
+
+  //otherwise
+  else {
+
+    //we need to look for the first node before us
+    while (curNode->next != this) {
+      curNode = curNode->next;
+    }
+
+    //now curNode is our parent
+    curNode->next = next;
+
+    //we've cut ourselves out of the chain, tadah
+  }
+
+  delete this;
+}
+
 void Bullet::draw() {
-  uint8_t dispX = x>>8;
-  uint8_t dispY = y>>8;
+  uint16_t dispX = x>>8;
+  uint16_t dispY = y>>8;
 
   ab.fillRect(dispX-1, dispY-1, 3, 3, WHITE);
 }
