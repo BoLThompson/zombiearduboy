@@ -12,11 +12,15 @@
 #define PLAYER_HEIGHT 12
 #define GUN_WIDTH 7
 #define GUN_HEIGHT 4
+#define FIRE_BUTTON B_BUTTON
 
 #define NORTHWEST UP_BUTTON+LEFT_BUTTON
 #define SOUTHWEST DOWN_BUTTON+LEFT_BUTTON
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
 #define SOUTHEAST UP_BUTTON+LEFT_BUTTON
+
+enum morality {GOOD};
+enum direction {RIGHT, LEFT};
 
 extern Arduboy2Base ab;
 extern Sprites sprites;

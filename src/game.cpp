@@ -1,6 +1,7 @@
 #include "game.h"
+#include "player.h"
 
-Player player;
+Player player; //haha lol
 
 //title screen
   //maybe a difficulty toggle
@@ -9,10 +10,6 @@ Player player;
 
 //game initialization
 void Game::init() {
-
-  //instantiate the director
-  // d.init();
-  // d.begin();
 
   //instantiate the player
   player.init();
@@ -24,8 +21,11 @@ void Game::loop() {
 
   //do player shit
   player.step();
-  player.draw();
+
   //do enemy shit
+
+  
+  player.draw();
 }
 
 //director
