@@ -2,8 +2,7 @@
 #define GAME_H
 #include "global.h"
 
-class Game {
-  public:
+namespace Game {
     void init();
     void loop();
 };

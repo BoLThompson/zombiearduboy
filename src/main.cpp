@@ -1,17 +1,19 @@
 #include <Arduino.h>
 #include <Arduboy2.h>
+
 #include "game.h"
 #include "global.h"
 
-Game game;
 // director d;
 
 void setup() {
-  ab.setFrameRate(FPS);
-  ab.boot();
-  ab.clear();
 
-  game.init();
+  //arduboy stuff
+  ab.setFrameRate(FPS); //framerate to global def
+  ab.boot();            //init that shit
+  ab.clear();           //clear the screen of any dumb crap that was there before
+
+  Game::init();  
 }
 
 void loop() {
@@ -20,7 +22,7 @@ void loop() {
   ab.clear();
 
   ab.pollButtons();
-  game.loop();
+  Game::loop();
 
   ab.display();
 }
