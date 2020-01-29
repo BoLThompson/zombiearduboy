@@ -30,27 +30,27 @@ struct Bullet {
   void draw();
 };
 
-struct Player {
-  private:
+namespace Player {
 
     //32 bit coordinates, low byte is subpixels
-    uint32_t x;
-    uint32_t y;
+    extern uint32_t x;
+    extern uint32_t y;
 
-    //used for jumping
-    int16_t vSpeed;
-    int16_t hSpeed;
+    //used for air movement, low byte is subpixels per frame
+    extern int16_t vSpeed;
+    extern int16_t hSpeed;
 
     //facing direction
-    bool faceRight;
+    extern bool faceRight;
 
-    struct BulletList bullets;
+    //TODO try and rework the entire bullet thing because linked lists are sort of pointless here
+    extern struct BulletList bullets;
 
     //pointer to the code which is executed on fire
-    void (Player::*fireRoutine)();
+    extern void (*fireRoutine)();
 
     //pointer to the code which is executed next frame
-    void (Player::*stepRoutine)();
+    extern void (*stepRoutine)();
 
     //idle step
     void idleStep();
@@ -63,12 +63,8 @@ struct Player {
     void jumpAction();
     void shootAction();
 
-  public:
-    struct BulletList * getBulletList();
     void init();
-    void step();
     void draw();
-    morality faction = GOOD;
 };
 
 #endif

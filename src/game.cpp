@@ -1,30 +1,19 @@
 #include "game.h"
 #include "player.h"
 
-extern Player player;
-
-//title screen
-  // maybe a difficulty toggle
-  // sound toggle?
-  // button layout
-
-//game initialization
+//gameplay initialization, sets us up for the actual run and gun
 void Game::init() {
 
-  //instantiate the player
-  player.init();
+  Player::init();   //set up all the values
 }
 
-//game loop
-void Game::loop() {
+//run and gun game loop.
+void Game::loop() {   //TODO rename to something more descriptive
 
-  //do player shit
-  player.step();
+  (*Player::stepRoutine)();
+  Player::bullets.step();
 
-  //do enemy shit
-
-  
-  player.draw();
+  Player::draw();
 }
 
 //death

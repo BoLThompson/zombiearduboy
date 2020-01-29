@@ -17,12 +17,11 @@ void setup() {
 }
 
 void loop() {
-  if (!ab.nextFrame()) return;
 
-  ab.clear();
+  if (!ab.nextFrame()) return;  //wait for next frame
+  ab.clear();                   //blank the screen
+  ab.pollButtons();             //hur durr
 
-  ab.pollButtons();
-  Game::loop();
-
-  ab.display();
+  Game::loop();                 //TODO replace this with a pointer, since the game loop will change depending on stuff
+  ab.display();                 //make the screen happen
 }

@@ -1,6 +1,13 @@
 #include "player.h"
 
-extern Player player;
+uint32_t Player::x;
+uint32_t Player::y;
+int16_t Player::vSpeed;
+int16_t Player::hSpeed;
+bool Player::faceRight;
+struct BulletList Player::bullets;
+void (*Player::fireRoutine)();
+void (*Player::stepRoutine)();
 
 //player initialization
 void Player::init() {
@@ -9,13 +16,6 @@ void Player::init() {
   stepRoutine = &Player::idleStep;
   fireRoutine = &Player::fireNormal;
   faceRight = true;
-}
-
-void Player::step() {
-  (this->*stepRoutine)();
-
-  //update player bullets
-  bullets.step();
 }
 
 void Player::idleStep() {
@@ -78,7 +78,7 @@ void Player::jumpStep() {
 
 void Player::shootAction() {
   if (ab.justPressed(FIRE_BUTTON)) {
-    (this->*fireRoutine)();
+    (*fireRoutine)();
   }
 }
 
@@ -114,11 +114,6 @@ void Player::draw() {
   ab.drawRect(dispX-(faceRight==true ? 0 : GUN_WIDTH), dispY-(PLAYER_HEIGHT/3)*2, GUN_WIDTH, GUN_HEIGHT, WHITE);
 
   bullets.draw();
-}
-
-struct BulletList * Player::getBulletList() {
-  struct BulletList *value = &bullets;
-  return value;
 }
 
 // //heheheh
@@ -191,11 +186,11 @@ void Bullet::normalStep() {
 }
 
 void Bullet::destroy() {
-  struct Bullet *curNode = (player.getBulletList())->head;
+  struct Bullet *curNode = (Player::bullets).head;
   
   //if we're the head,
   if (curNode == this) {
-    (player.getBulletList())->head = next;
+    (Player::bullets).head = next;
   }
 
   //otherwise
