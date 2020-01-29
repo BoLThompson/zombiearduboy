@@ -22,8 +22,15 @@
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
 #define SOUTHEAST UP_BUTTON+LEFT_BUTTON
 
-enum morality {GOOD};
-enum direction {RIGHT, LEFT};
+struct Pos {
+  int32_t x;  //lowest byte is subpixels
+  int32_t y;  //same
+};
+
+struct Speed {
+  int16_t h; //low byte is subpixels per frame
+  int16_t v; //same
+};
 
 extern Arduboy2Base ab;
 extern Sprites sprites;

@@ -11,7 +11,7 @@ void Game::init() {
 void Game::loop() {   //TODO rename to something more descriptive
 
   (*Player::stepRoutine)();
-  Player::bullets.step();
+  //(*Entities::step)();
 
   Player::draw();
 }
