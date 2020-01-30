@@ -23,7 +23,16 @@
   //execute i.fncptr(i)
 
 struct Entity {
-  void (*funcptr)(&Entity me);  //a pointer to a public goddamned function being run by the global instance with a pointer to the entity that it's operating on
+  void (*funcptr)(uint8_t index);  //a pointer to a public goddamned function being run by the global instance, argument index is the slot that this entity occupies
+};
+
+extern struct Entity *entities[ENTITY_MAX];
+
+namespace Entities {
+  void init();
+  void step();
+  void createPNormalBullet(Pos pos, Direction dir);
+  void draw();
 };
 
 #endif

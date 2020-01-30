@@ -1,8 +1,10 @@
 #include "player.h"
+#include "entities.h"
 
 Pos Player::pos;
 Speed Player::speed;
 bool Player::faceRight;
+uint8_t Player::fireTimer;
 void (*Player::fireRoutine)();
 void (*Player::stepRoutine)();
 
@@ -12,6 +14,7 @@ void Player::init() {
   pos.y = TEMP_GROUND<<8;
   stepRoutine = &Player::idleStep;
   fireRoutine = &Player::fireNormal;
+  fireTimer = 0;
   faceRight = true;
 }
 
@@ -54,6 +57,8 @@ void Player::idleStep() {
 
   //possibly jump
   jumpAction();
+
+  draw();
 }
 
 void Player::jumpStep() {
@@ -71,10 +76,17 @@ void Player::jumpStep() {
   }
 
   shootAction();
+
+  draw();
 }
 
 void Player::shootAction() {
-  if (ab.justPressed(FIRE_BUTTON)) {
+  if (fireTimer > 0) {
+    fireTimer --;
+    return;
+  }
+
+  if (ab.pressed(FIRE_BUTTON)) {
     (*fireRoutine)();
   }
 }
@@ -94,6 +106,13 @@ void Player::jumpAction() {
 }
 
 void Player::fireNormal() {
+  fireTimer = 5;
+
+  Pos bulletPos;
+  bulletPos.x = (pos.x>>8) + 5 * (faceRight ? 1 : -1);
+  bulletPos.y = (pos.y>>8) - 7;
+
+  Entities::createPNormalBullet(bulletPos, faceRight ? RIGHT : LEFT);
 }
 
 void Player::draw() {

@@ -19,6 +19,8 @@ namespace Player {
     //pointer to the code which is executed next frame
     extern void (*stepRoutine)();
 
+    extern uint8_t fireTimer;
+
     //idle step
     void idleStep();
     //in air

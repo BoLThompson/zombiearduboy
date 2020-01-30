@@ -17,22 +17,40 @@
 
 #define TEMP_GROUND (FIELD_HEIGHT/4)*3
 
+#define ENTITY_MAX 30
+
 #define NORTHWEST UP_BUTTON+LEFT_BUTTON
 #define SOUTHWEST DOWN_BUTTON+LEFT_BUTTON
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
 #define SOUTHEAST UP_BUTTON+LEFT_BUTTON
 
 struct Pos {
-  int32_t x;  //lowest byte is subpixels
-  int32_t y;  //same
+  int16_t x;
+  int16_t y;
 };
 
 struct Speed {
-  int16_t h; //low byte is subpixels per frame
-  int16_t v; //same
+  int16_t h;
+  int16_t v;
+};
+
+struct SubPos {
+  uint8_t x;
+  uint8_t y;
 };
 
 extern Arduboy2Base ab;
 extern Sprites sprites;
+
+enum Direction {
+  UP        = UP_BUTTON,
+  UPRIGHT   = UP_BUTTON+RIGHT_BUTTON,
+  UPLEFT    = UP_BUTTON+LEFT_BUTTON,
+  RIGHT     = RIGHT_BUTTON,
+  LEFT      = LEFT_BUTTON,
+  DOWNRIGHT = DOWN_BUTTON+RIGHT_BUTTON,
+  DOWNLEFT  = DOWN_BUTTON+LEFT_BUTTON,
+  DOWN      = DOWN_BUTTON,
+};
 
 #endif
