@@ -1,21 +1,25 @@
 from PIL import Image
+import json
 import os
+
+progHeader = "PROGMEM const uint8_t "
+progTail = "[] = {"
 
 f = open("src\\assets.h","w+")
 
 f.write("#ifndef ASSET_H\r#define ASSET_H\r\r")
 
-f.write("//Begin tileset dump...\r")
+f.write("//  Begin tileset dump...\r")
 tileSize = 8
 
-for filename in os.listdir("images\\tilesets"): #each image in the tileset folder
+for filename in os.listdir("assets\\tilesets"): #each image in the tileset folder
 
   f.write("//  "+filename+"\r")                             #filename comment
-  f.write("PROGMEM const uint8_t "+filename[:-4]+"[] = {")  #variable declaration
+  f.write(progHeader+filename[:-4]+progTail)  #variable declaration
   #(variable name is filename minus the extension)
   f.write("\r  "+str(tileSize)+","+str(tileSize)+",\r")
 
-  image = Image.open("images\\tilesets\\"+filename, "r") #open the bmp image file
+  image = Image.open("assets\\tilesets\\"+filename, "r") #open the bmp image file
   pix_val = list(image.getdata())                   #list of pixels (zero or 255)
 
   # for v in pix_val:
@@ -48,7 +52,28 @@ for filename in os.listdir("images\\tilesets"): #each image in the tileset folde
       f.write("\r")
     startX = x
 
-  f.write("};")
+  f.write("};\r\r")
 
-f.write("\r\r#endif")
+
+f.write("//  Begin tileset dump...\r")
+for filename in os.listdir("assets\\maps"): #each map in the maps folder
+  mapFile = open("assets\\maps\\"+filename, "r")
+  map = json.load(mapFile)
+  f.write("//  "+filename+"\r")
+  f.write(progHeader+filename[:-5]+progTail)
+  f.write("\r  "+str(map["width"])+","+str(map["height"])+",")
+  dataIndex = 0
+  tileY = 0
+  while (tileY < map["height"]):
+    f.write("\r  ")
+    tileX = 0
+    while (tileX < map["width"]):
+      f.write(str(hex(map["data"][dataIndex]))+",")
+      dataIndex = dataIndex+1
+      tileX = tileX+1
+    tileY = tileY+1
+  f.write("\r};\r\r")
+
+  
+f.write("#endif")
 f.close()
