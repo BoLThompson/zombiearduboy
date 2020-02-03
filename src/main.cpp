@@ -22,6 +22,6 @@ void loop() {
   ab.clear();                   //blank the screen
   ab.pollButtons();             //hur durr
 
-  Game::loop();                 //TODO replace this with a pointer, since the game loop will change depending on stuff
+  Game::runAndGun();            //TODO replace this with a pointer, since the game loop will change depending on stuff
   ab.display();                 //make the screen happen
 }

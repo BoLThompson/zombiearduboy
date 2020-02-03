@@ -4,7 +4,7 @@
 
 namespace Game {
     void init();
-    void loop();
+    void runAndGun();
 };
 
 #endif

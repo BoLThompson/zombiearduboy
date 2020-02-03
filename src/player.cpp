@@ -10,7 +10,7 @@ void (*Player::stepRoutine)();
 
 //player initialization
 void Player::init() {
-  pos.x = (FIELD_WIDTH/8)<<8;
+  pos.x = (SCREEN_WIDTH/8)<<8;
   pos.y = TEMP_GROUND<<8;
   stepRoutine = &Player::idleStep;
   fireRoutine = &Player::fireNormal;
