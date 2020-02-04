@@ -3,6 +3,9 @@
 #include "entities.h"
 #include "map.h"
 
+uint16_t Game::cameraX;
+uint16_t Game::cameraY;
+
 //gameplay initialization, sets us up for the actual run and gun
 void Game::init() {
 
@@ -17,6 +20,15 @@ void Game::runAndGun() {
   Map::draw();
   (*Player::stepRoutine)();
   Entities::step();
+
+  if ((Player::pos.x>>8) > cameraX+(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER)) {
+    cameraX = (Player::pos.x>>8)-(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER);
+    cameraX = min(cameraX, (Map::width*TILE_SIZE)-SCREEN_WIDTH);
+  }
+  else if (((Player::pos.x>>8) < cameraX+CAMERA_LEFT_BUFFER) && (Player::pos.x>>8 > CAMERA_LEFT_BUFFER)) {
+    cameraX = (Player::pos.x>>8)-CAMERA_LEFT_BUFFER;
+    // cameraX = max(cameraX,0);
+  }
 }
 
 //death

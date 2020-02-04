@@ -3,6 +3,8 @@
 #include "global.h"
 
 namespace Map {
+  extern uint8_t width;
+  extern uint8_t height;
   extern uint16_t cameraX;
   extern uint16_t cameraY;
   void draw();

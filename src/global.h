@@ -24,11 +24,14 @@
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
 #define SOUTHEAST UP_BUTTON+LEFT_BUTTON
 
+#define CAMERA_RIGHT_BUFFER 80
+#define CAMERA_LEFT_BUFFER 30
+
 #define TILE_SIZE 8
 
 struct Pos {
-  int16_t x;
-  int16_t y;
+  int32_t x;
+  int32_t y;
 };
 
 struct Speed {

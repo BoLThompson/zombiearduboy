@@ -1,5 +1,6 @@
 #include "player.h"
 #include "entities.h"
+#include "game.h"
 
 Pos Player::pos;
 Speed Player::speed;
@@ -116,8 +117,8 @@ void Player::fireNormal() {
 }
 
 void Player::draw() {
-  uint16_t dispX = pos.x>>8;
-  uint16_t dispY = pos.y>>8;
+  uint16_t dispX = (pos.x>>8)-Game::cameraX;
+  uint16_t dispY = (pos.y>>8)-Game::cameraY;
   ab.fillRect(dispX-PLAYER_WIDTH/2+1,dispY-PLAYER_HEIGHT+1, PLAYER_WIDTH-2, PLAYER_HEIGHT-2, BLACK);
   ab.drawRect(dispX-PLAYER_WIDTH/2, dispY-PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
   ab.drawRect(dispX-(faceRight==true ? 0 : GUN_WIDTH), dispY-(PLAYER_HEIGHT/3)*2, GUN_WIDTH, GUN_HEIGHT, WHITE);
