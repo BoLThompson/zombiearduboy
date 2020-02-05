@@ -19,6 +19,9 @@ namespace Player {
     //pointer to the code which is executed next frame
     extern void (*stepRoutine)();
 
+    //pointer to the code for drawing on the screen
+    extern void (*drawRoutine)();
+
     extern uint8_t fireTimer;
 
     //idle step

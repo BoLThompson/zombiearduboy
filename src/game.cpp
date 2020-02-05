@@ -17,9 +17,7 @@ void Game::init() {
 //run and gun game loop.
 void Game::runAndGun() {
 
-  Map::draw();
   (*Player::stepRoutine)();
-  Entities::step();
 
   if ((Player::pos.x>>8) > cameraX+(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER)) {
     cameraX = (Player::pos.x>>8)-(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER);
@@ -29,6 +27,12 @@ void Game::runAndGun() {
     cameraX = (Player::pos.x>>8)-CAMERA_LEFT_BUFFER;
     // cameraX = max(cameraX,0);
   }
+
+  Map::draw();
+
+  (*Player::drawRoutine)();
+
+  Entities::step();
 }
 
 //death

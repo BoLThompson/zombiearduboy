@@ -39,3 +39,34 @@ void Map::draw() {
     }
   }
 }
+
+bool Map::collide(uint16_t x, uint16_t y, const Box hitbox) {
+  if  ((hitbox.x >= x) || (x+hitbox.width-1 > width*TILE_SIZE))  //test for off the left or off the right
+    return(true); //no escaping
+
+  // if ((y+hitbox.height)-1 || ((hitbox.y >= y) > height*TILE_SIZE)) //test for off the vertical bounds
+  //   return(false); //don't care
+
+  x-=hitbox.x;
+  y-=hitbox.y;
+  uint16_t tx1 = x/TILE_SIZE;
+  uint16_t tx2 = (x+hitbox.width-1)/TILE_SIZE;
+  uint16_t ty1 = y/TILE_SIZE;
+  uint16_t ty2 = (y+hitbox.height-1)/TILE_SIZE; //note that we have to check the tiles immediately past ty2 and tx2
+
+  for (uint16_t tileX = tx1; tileX <= tx2; tileX++) {
+    for (uint16_t tileY = ty1; tileY <= ty2; tileY++) {
+      if (getTileAt(tileX, tileY) == 0) { //test for solid
+        if (Util::collideRect(tileX*TILE_SIZE, tileY*TILE_SIZE, TILE_SIZE, TILE_SIZE, x, y, hitbox.width, hitbox.height)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return (false);
+
+  //how many tiles are we checking
+  //are those tiles solid
+  //do we intersect
+}

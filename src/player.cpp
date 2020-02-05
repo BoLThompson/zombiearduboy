@@ -1,6 +1,7 @@
 #include "player.h"
 #include "entities.h"
 #include "game.h"
+#include "map.h"
 
 Pos Player::pos;
 Speed Player::speed;
@@ -8,18 +9,28 @@ bool Player::faceRight;
 uint8_t Player::fireTimer;
 void (*Player::fireRoutine)();
 void (*Player::stepRoutine)();
+void (*Player::drawRoutine)();
+
+namespace {
+  const Box normalBox = {
+    (PLAYER_WIDTH>>1), (PLAYER_HEIGHT),
+    PLAYER_WIDTH, PLAYER_HEIGHT
+  };
+};
 
 //player initialization
 void Player::init() {
   pos.x = (SCREEN_WIDTH/8)<<8;
-  pos.y = TEMP_GROUND<<8;
-  stepRoutine = &Player::idleStep;
+  pos.y = 0;
+  stepRoutine = &Player::jumpStep;
   fireRoutine = &Player::fireNormal;
   fireTimer = 0;
   faceRight = true;
 }
 
 void Player::idleStep() {
+
+  speed.v = 0;
 
   //walking and moonwalking
   
@@ -41,6 +52,9 @@ void Player::idleStep() {
     //if we are shooting, only move the extra half pixel if we're facing the right way
     else if (!faceRight) pos.x-=_BV(7);
 
+    if (Map::collide((pos.x>>8), pos.y>>8, normalBox)) { //if that put us into a wall, back out one pixel
+      pos.x+=_BV(8);
+    }
   }
 
   //and all that again for the right
@@ -51,6 +65,9 @@ void Player::idleStep() {
       pos.x+=_BV(7);
     }
     else if (faceRight) pos.x+=_BV(7);
+    if (Map::collide((pos.x>>8), pos.y>>8, normalBox)) {
+      pos.x-=_BV(8);
+    }
   }
 
   //shoot maybe?
@@ -59,26 +76,40 @@ void Player::idleStep() {
   //possibly jump
   jumpAction();
 
-  draw();
+  drawRoutine = draw;
+
+  if (!Map::collide(pos.x>>8,(pos.y>>8)+1,normalBox)) {
+    stepRoutine = &Player::jumpStep;
+    if (ab.pressed(RIGHT_BUTTON)) {
+      speed.h = _BV(8);
+    }
+    else if (ab.pressed(LEFT_BUTTON)) {
+      speed.h = _BV(8)*-1;
+    }
+  }
 }
 
 void Player::jumpStep() {
   pos.y+= speed.v;
-  speed.v = min(speed.v+64,5<<8);
 
-  pos.x+= speed.h;
+  if (speed.h != 0) {
+    if (!Map::collide((pos.x+speed.h)>>8,pos.y>>8,normalBox))
+      pos.x+= speed.h;
+  }
 
   if (ab.pressed(RIGHT_BUTTON)) faceRight = true;
   else if (ab.pressed(LEFT_BUTTON)) faceRight = false;
 
-  if (pos.y >= TEMP_GROUND<<8) {
-    pos.y = TEMP_GROUND<<8;
+  if (Map::collide(pos.x>>8,pos.y>>8,normalBox)) {
+    pos.y = (((pos.y>>8)/TILE_SIZE)*TILE_SIZE)<<8;
     stepRoutine = &Player::idleStep;
   }
 
+  speed.v = min(speed.v+64,5<<8);
+
   shootAction();
 
-  draw();
+  drawRoutine = draw;
 }
 
 void Player::shootAction() {
@@ -119,7 +150,7 @@ void Player::fireNormal() {
 void Player::draw() {
   uint16_t dispX = (pos.x>>8)-Game::cameraX;
   uint16_t dispY = (pos.y>>8)-Game::cameraY;
-  ab.fillRect(dispX-PLAYER_WIDTH/2+1,dispY-PLAYER_HEIGHT+1, PLAYER_WIDTH-2, PLAYER_HEIGHT-2, BLACK);
-  ab.drawRect(dispX-PLAYER_WIDTH/2, dispY-PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
+  ab.fillRect(dispX-(PLAYER_WIDTH>>1)+1,dispY-PLAYER_HEIGHT+1, PLAYER_WIDTH-1, PLAYER_HEIGHT-2, BLACK);
+  ab.drawRect(dispX-(PLAYER_WIDTH>>1), dispY-PLAYER_HEIGHT, PLAYER_WIDTH+1, PLAYER_HEIGHT, WHITE);
   ab.drawRect(dispX-(faceRight==true ? 0 : GUN_WIDTH), dispY-(PLAYER_HEIGHT/3)*2, GUN_WIDTH, GUN_HEIGHT, WHITE);
 }

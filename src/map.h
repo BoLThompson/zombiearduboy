@@ -10,6 +10,7 @@ namespace Map {
   void draw();
   uint8_t getTileAt(uint8_t x, uint8_t y);
   void init();
+  bool collide(uint16_t x, uint16_t y, const Box hitbox);
 };
 
 #endif

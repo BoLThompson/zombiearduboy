@@ -24,10 +24,15 @@
 #define NORTHEAST UP_BUTTON+RIGHT_BUTTON
 #define SOUTHEAST UP_BUTTON+LEFT_BUTTON
 
-#define CAMERA_RIGHT_BUFFER 80
-#define CAMERA_LEFT_BUFFER 30
+#define CAMERA_RIGHT_BUFFER 75
+#define CAMERA_LEFT_BUFFER 40
 
 #define TILE_SIZE 8
+
+namespace Util
+{
+  bool collideRect(int16_t x1, int8_t y1, uint8_t width1, uint8_t height1, int16_t x2, int8_t y2, uint8_t width2, uint8_t height2);
+}
 
 struct Pos {
   int32_t x;
@@ -42,6 +47,13 @@ struct Speed {
 struct SubPos {
   uint8_t x;
   uint8_t y;
+};
+
+struct Box {
+  uint8_t x;
+  uint8_t y;
+  uint8_t width;
+  uint8_t height;
 };
 
 extern Arduboy2Base ab;
