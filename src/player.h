@@ -24,6 +24,8 @@ namespace Player {
 
     extern uint8_t fireTimer;
 
+    extern Direction aim;
+
     //idle step
     void idleStep();
     //in air

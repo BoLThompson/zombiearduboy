@@ -65,8 +65,4 @@ bool Map::collide(uint16_t x, uint16_t y, const Box hitbox) {
   }
 
   return (false);
-
-  //how many tiles are we checking
-  //are those tiles solid
-  //do we intersect
 }

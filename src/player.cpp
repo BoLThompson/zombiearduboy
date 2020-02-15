@@ -10,6 +10,7 @@ uint8_t Player::fireTimer;
 void (*Player::fireRoutine)();
 void (*Player::stepRoutine)();
 void (*Player::drawRoutine)();
+Direction Player::aim;
 
 namespace {
   const Box normalBox = {
@@ -26,6 +27,7 @@ void Player::init() {
   fireRoutine = &Player::fireNormal;
   fireTimer = 0;
   faceRight = true;
+  aim = RIGHT;
 }
 
 void Player::idleStep() {
@@ -113,6 +115,16 @@ void Player::jumpStep() {
 }
 
 void Player::shootAction() {
+  
+  if (!ab.pressed(FIRE_BUTTON)) {
+    uint8_t newAim = ab.buttonsState();
+
+    newAim &= ~(A_BUTTON | B_BUTTON);
+
+    if (newAim != 0) aim = (Direction) newAim;
+    else aim = faceRight? RIGHT : LEFT;
+  }
+
   if (fireTimer > 0) {
     fireTimer --;
     return;
@@ -144,7 +156,7 @@ void Player::fireNormal() {
   bulletPos.x = (pos.x>>8) + 5 * (faceRight ? 1 : -1);
   bulletPos.y = (pos.y>>8) - 7;
 
-  Entities::createPNormalBullet(bulletPos, faceRight ? RIGHT : LEFT);
+  Entities::createPNormalBullet(bulletPos, (Direction) aim);
 }
 
 void Player::draw() {

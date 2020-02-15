@@ -7,14 +7,24 @@ void pNormalBulletStep(uint8_t index) {
 
   ab.fillRect(me->pos.x-Game::cameraX, me->pos.y-Game::cameraY, 3, 3, WHITE);
   
-  if (me->dir == LEFT) {
+  if ((me->dir&LEFT) != 0) {
     me->pos.x-=5;
   }
-  else if (me->dir == RIGHT) {
+  else if ((me->dir&RIGHT) != 0) {
     me->pos.x+=5;
   }
 
-  if ((me->pos.x > Game::cameraX+SCREEN_WIDTH) || (me->pos.x < Game::cameraX)) {
+  if ((me->dir&UP) != 0) {
+    me->pos.y-=5;
+  }
+  else if ((me->dir&DOWN) != 0) {
+    me->pos.y+=5;
+  }
+
+  if ((me->pos.x > Game::cameraX+SCREEN_WIDTH) 
+  || (me->pos.x < Game::cameraX)
+  || (me->pos.y < Game::cameraY)
+  || (me->pos.y > Game::cameraY+SCREEN_HEIGHT)) {
     entities[index] = NULL;
     delete me;
   }
