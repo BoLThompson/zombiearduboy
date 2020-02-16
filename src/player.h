@@ -10,9 +10,6 @@ namespace Player {
     //used for air movement, low byte is subpixels per frame
     extern Speed speed;
 
-    //facing direction
-    extern bool faceRight;
-
     //pointer to the code which is executed on fire
     extern void (*fireRoutine)();
 

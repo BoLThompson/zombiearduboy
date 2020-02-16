@@ -29,13 +29,13 @@ void Map::draw() {
   uint8_t startX = Game::cameraX / 8;
   uint8_t startY = Game::cameraY / 8;
 
-   for (uint8_t tileY = startY; tileY <= (startY+(SCREEN_HEIGHT/TILE_SIZE)); tileY++){ //iterate through columns
+   for (uint8_t tileY = startY; tileY <= (startY+(SCREEN_HEIGHT/TILE_SIZE)); tileY++){ //iterate through rows
     for (uint8_t tileX = startX; tileX <= (startX+(SCREEN_WIDTH/TILE_SIZE)); tileX++) { //iterate through tiles
       //determine tile type
       tileIndex = getTileAt(tileX,tileY);
 
       //draw the tile
-      sprites.drawOverwrite(tileX*TILE_SIZE-Game::cameraX, tileY*TILE_SIZE, tiles, tileIndex); //draw tile
+      sprites.drawOverwrite(tileX*TILE_SIZE-Game::cameraX, tileY*TILE_SIZE-Game::cameraY, tiles, tileIndex); //draw tile
     }
   }
 }

@@ -19,13 +19,21 @@ void Game::runAndGun() {
 
   (*Player::stepRoutine)();
 
-  if ((Player::pos.x>>8) > cameraX+(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER)) {
-    cameraX = (Player::pos.x>>8)-(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER);
+  if ((Player::pos.x) > cameraX+(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER)) {
+    cameraX = (Player::pos.x)-(SCREEN_WIDTH-CAMERA_RIGHT_BUFFER);
     cameraX = min(cameraX, (Map::width*TILE_SIZE)-SCREEN_WIDTH);
   }
-  else if (((Player::pos.x>>8) < cameraX+CAMERA_LEFT_BUFFER) && (Player::pos.x>>8 > CAMERA_LEFT_BUFFER)) {
-    cameraX = (Player::pos.x>>8)-CAMERA_LEFT_BUFFER;
+  else if (((Player::pos.x) < cameraX+CAMERA_LEFT_BUFFER) && (Player::pos.x > CAMERA_LEFT_BUFFER)) {
+    cameraX = (Player::pos.x)-CAMERA_LEFT_BUFFER;
     // cameraX = max(cameraX,0);
+  }
+
+  if ((Player::pos.y>>8) > cameraY+(SCREEN_HEIGHT-24)) {
+    cameraY = (Player::pos.y>>8)-(SCREEN_HEIGHT-24);
+    cameraY = min(cameraY, (Map::height*TILE_SIZE)-SCREEN_HEIGHT);
+  }
+  else if (((Player::pos.y>>8) < cameraY+32) && (Player::pos.y>>8 > 32)) {
+    cameraY = (Player::pos.y>>8) - 32;
   }
 
   Map::draw();

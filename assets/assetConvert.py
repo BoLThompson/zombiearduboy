@@ -74,6 +74,52 @@ for filename in os.listdir("assets\\maps"): #each map in the maps folder
     tileY = tileY+1
   f.write("\r};\r\r")
 
+f.write("//  Begin sprite dump...\r")
+for filename in os.listdir("assets\\sprites"):
+
+  f.write("//  "+filename+"\r")                             #filename comment
+  f.write(progHeader+filename[:-4]+progTail)  #variable declaration
+  #(variable name is filename minus the extension)
+
+  # get image width
+  # assume image height of 24 pixels
+  f.write("\r  "+str(image.width)+","+str(24)+",\r")
+
+  image = Image.open("assets\\sprites\\"+filename, "r") #open the bmp image file
+  pix_val = list(image.getdata())                   #list of pixels (zero or 255)
+
+
+  # write a byte of vertical pixels
+  # write the next byte over
+
+  x = 0
+  startX = 0
+  # read each column of tiles
+  while (startX < image.width):
+    startY = 0
+    while (startY < 24):
+      f.write("  ")
+      #########################################################
+      x = startX
+      # this does a single tile
+      while (x < (startX+image.width)) :
+        # read a column of pixels
+        y = startY+8
+        currchar = 0
+        while (y > (startY)) :
+          y = y-1
+          currchar = currchar << 1
+          if ( pix_val[(y*image.width)+x][0] > 128 ):
+            currchar = currchar|1
+        f.write(str(hex(currchar))+",")
+        x = x+1
+      #######################################################
+      startY = startY+8
+      f.write("\r")
+    startX = x
+f.write("};\r\r")
+
+
   
 f.write("#endif")
 f.close()
